@@ -14,6 +14,8 @@
 */
 
 int read_decimal (void);
+void convertToBinary(int);
+
 int main (int argc, char* argv[]) {
     if(argc == 2){
         int x = strncmp(argv[1], "-x", 3);
@@ -21,7 +23,12 @@ int main (int argc, char* argv[]) {
         if(x==0){
             printf("%s\n", argv[1]);
         }else if(b==0){
-            printf("%s\n", argv[1]);
+            int decimal=read_decimal();
+            while (decimal != EOF){
+                convertToBinary(decimal);
+                decimal=read_decimal();
+                }
+            exit(0);
         }else{
             printf("Usage: ./convert [-x|-b]\n");
             exit(0);
@@ -34,8 +41,36 @@ int main (int argc, char* argv[]) {
  return 0;
 }
 
+
+
 int read_decimal (void){
- int decimal;
- scanf("%d" , &decimal);
- return (decimal);
+    int decimal;
+    int input=scanf("%d" , &decimal);
+    if (input==EOF){
+        printf("^D\n");
+        return(EOF);
+        }
+    else{
+        return (decimal);
+    }
+}
+
+void convertToBinary(int dec){
+    int binaryArr[32];
+    int i=0;
+    while (dec!=0){
+        int rem = dec%2;
+        binaryArr[i]=rem;
+        dec = dec/2;
+        i++;
+    }
+    int v=i-1;
+    for (int j=i-1; j>=0; j--){
+        printf("%d", binaryArr[j]);
+        if (v%4==0){
+            printf(" ");
+        }
+        v--;
+    }
+    printf("\n");
 }

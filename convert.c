@@ -13,19 +13,18 @@
 
 int read_decimal (void);
 int main (int argc, char* argv[]) {
-    int x = strncmp(argv[1], "-x", 3);
-    int b = strncmp(argv[1], "-b", 3);
-    if((argc != 2) || (x != 0) || (b != 0)){
+    if(argc == 2){
+        int x = strncmp(argv[1], "-x", 3);
+        int b = strncmp(argv[1], "-b", 3);
+        if(x==0){
+            printf("%s\n", argv[1]);
+        }else if(b==0){
+            printf("%s\n", argv[1]);
+        }else{
+            printf("Usage: ./convert [-x|-b]");
+        }
+    }else if(argc != 2){
         printf("Usage: ./convert [-x|-b]");
-    }else if (x == 0){
-        printf("%s\n", argv[1]);
-    }else if ( b == 0){
-        printf("%s\n", argv[1]);
-    }
-    
-    int i;
-    for(i=0; i < argc; i++){
-        printf("%s/n", argv[i])
     }
  printf("%d\n", read_decimal());
  return 0;

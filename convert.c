@@ -13,13 +13,14 @@
 
 int read_decimal (void);
 int main (int argc, char* argv[]) {
-    if((argc != 2) || (argv[1] != "-x") || (argv[1] != "-b")){
+    int x = strncmp(argv[1], "-x", 3);
+    int b = strncmp(argv[1], "-b", 3);
+    if((argc != 2) || (x != 0) || (b != 0)){
         printf("Usage: ./convert [-x|-b]");
-        break;
-    }else if (argv[1] == "-x"){
+    }else if (x == 0){
         printf("%s\n", argv[1]);
-    }else if (argv[1] == "-b"){
-        printf("%s\n", arg[1]);
+    }else if ( b == 0){
+        printf("%s\n", argv[1]);
     }
     
     int i;

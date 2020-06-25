@@ -56,7 +56,7 @@ int read_decimal (void){
 }
 
 void convertToBinary(int dec){
-    int binaryArr[32];
+    int binaryArr[16];
     int i=0;
     while (dec!=0){
         int rem = dec%2;

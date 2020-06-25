@@ -2,7 +2,9 @@
  * Name: Jessica Stillwell, Haylee Rawdin
  * Description: This program converts decimal to either binary or hexadecimal
 */
-#include <stdio.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <stdlib.h>
 
 /* Main
  * argc, argv 	Command line arguments.
@@ -21,10 +23,12 @@ int main (int argc, char* argv[]) {
         }else if(b==0){
             printf("%s\n", argv[1]);
         }else{
-            printf("Usage: ./convert [-x|-b]");
+            printf("Usage: ./convert [-x|-b]\n");
+            exit(0);
         }
     }else if(argc != 2){
-        printf("Usage: ./convert [-x|-b]");
+        printf("Usage: ./convert [-x|-b]\n");
+        exit(0);
     }
  printf("%d\n", read_decimal());
  return 0;

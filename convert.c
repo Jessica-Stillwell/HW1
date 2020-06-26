@@ -6,17 +6,17 @@
  #include <string.h>
  #include <stdlib.h>
 
-/* Main
- * argc, argv 	Command line arguments.
- * return	zero for success, non-zero for failure
- *
- * This is the min entry point for the program.
-*/
-
+/* Declaring functions */
 int read_decimal (void);
-void convertToBinary(int);
+void decToBinary(int);
 void decToHex(int dec);
 
+/* Main
+ * argc, argv   Command line arguments.
+ * return   zero for success, non-zero for failure
+ *
+ * This is the main entry point for the program.
+*/
 int main (int argc, char* argv[]) {
     int decimal;
     if(argc == 2){
@@ -32,7 +32,7 @@ int main (int argc, char* argv[]) {
         }else if(b==0){
             decimal = read_decimal();
             while (decimal != EOF){
-                convertToBinary(decimal);
+                decToBinary(decimal);
                 decimal = read_decimal();
                 }
             exit(0);
@@ -93,7 +93,13 @@ void decToHex(int dec){
     printf("\n");
 }
 
-void convertToBinary(int dec){
+/* decToBinary
+ * Purpose: This function converts a decimal value to its binary value.
+ * Parameters:
+ *  int dec: this int parameter represents the decimal to be converted to binary
+ * Result: A binary value.
+ */
+void decToBinary(int dec){
     int binaryArr[16];
     int i=0;
     while (dec!=0){

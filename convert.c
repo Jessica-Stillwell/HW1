@@ -15,18 +15,25 @@
 
 int read_decimal (void);
 void convertToBinary(int);
+void decToHex(int dec);
 
 int main (int argc, char* argv[]) {
+    int decimal;
     if(argc == 2){
         int x = strncmp(argv[1], "-x", 3);
         int b = strncmp(argv[1], "-b", 3);
         if(x==0){
-            printf("%s\n", argv[1]);
+            decimal = read_decimal();
+            while (decimal != EOF) {
+                decToHex(decimal);
+                decimal = read_decimal();
+            }
+            exit(0);
         }else if(b==0){
-            int decimal=read_decimal();
+            decimal = read_decimal();
             while (decimal != EOF){
                 convertToBinary(decimal);
-                decimal=read_decimal();
+                decimal = read_decimal();
                 }
             exit(0);
         }else{
@@ -41,8 +48,6 @@ int main (int argc, char* argv[]) {
  return 0;
 }
 
-
-
 int read_decimal (void){
     int decimal;
     int input=scanf("%d" , &decimal);
@@ -53,6 +58,29 @@ int read_decimal (void){
     else{
         return (decimal);
     }
+}
+
+void decToHex(int dec){
+    int remainder;
+    int i =0;
+    char hexArr[100];
+    while(dec != 0){
+        remainder = dec % 16;
+        if(remainder < 10){
+            hexArr[i] = remainder + 48;
+            i++;
+        }else{
+            hexArr[i] = remainder + 55;
+            i++;
+        }
+        dec=dec/16;
+    }
+    int j;
+    printf("0x");
+    for( j = i-1; j >= 0; j--){
+        printf("%c", hexArr[j]);
+    }
+    printf("\n");
 }
 
 void convertToBinary(int dec){

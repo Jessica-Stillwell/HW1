@@ -64,13 +64,11 @@ void convertToBinary(int dec){
         dec = dec/2;
         i++;
     }
-    int v=i-1;
-    for (int j=i-1; j>=0; j--){
-        printf("%d", binaryArr[j]);
-        if (v%4==0){
+    for (i=i-1; i>=0; i--){
+        printf("%d", binaryArr[i]);
+        if (i%4==0){
             printf(" ");
         }
-        v--;
     }
     printf("\n");
 }

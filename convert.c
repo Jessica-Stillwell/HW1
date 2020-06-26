@@ -48,6 +48,10 @@ int main (int argc, char* argv[]) {
  return 0;
 }
 
+/* Read Decimal
+ * Purpose: This function reads an input decimal from stdin.
+ * Returns: An int value representing a decimal, collected from scanf.
+*/
 int read_decimal (void){
     int decimal;
     int input=scanf("%d" , &decimal);
@@ -60,6 +64,12 @@ int read_decimal (void){
     }
 }
 
+/* decToHex
+ * Purpose: This function converts a decimal value and to its hexadecimal value.
+ * Parameters:
+ *  int dec: this int parameter represents the decimal to be converted to hexadecimal
+ * Result: A printed hexadecimal value.
+ */
 void decToHex(int dec){
     int remainder;
     int i =0;

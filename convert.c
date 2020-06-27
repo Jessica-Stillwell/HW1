@@ -100,7 +100,7 @@ void decToHex(int dec){
  * Result: A binary value.
  */
 void decToBinary(int dec){
-    int binaryArr[16];
+    int binaryArr[100];
     int i=0;
     while (dec!=0){
         int rem = dec%2;

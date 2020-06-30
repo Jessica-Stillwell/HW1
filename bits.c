@@ -152,7 +152,7 @@ int bitAnd(int x, int y) {
  *   Hint : less than 5 lines of code
  */
 int getByte(int x, int n) {
-  return 2;
+  return ((x<<(8*(3-n))) >> 24) & 0xff;;
 }
 /*
  * logicalShift - shift x to the right by n, using a logical shift
@@ -164,7 +164,8 @@ int getByte(int x, int n) {
  *   Hint : less than 10 lines of code
  */
 int logicalShift(int x, int n) {
-  return 2;
+  int i = 0x80000000;
+  return (x >> n) & ~((i >> n) << 1);;
 }
 /*
  * bitCount - returns count of number of 1's in word

@@ -186,7 +186,7 @@ int bitCount(int x) {
  *   Hint : less than 5 lines of code
  */
 int tmin(void) {
-  return 2;
+  return 1<<31;
 }
 /*
  * fitsBits - return 1 if x can be represented as an
@@ -199,7 +199,8 @@ int tmin(void) {
  *   Hint : less than 5 lines of code
  */
 int fitsBits(int x, int n) {
-  return 2;
+    int y = (x<<(32-n))>>(32-n);
+    return !(x^y);
 }
 /*
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30

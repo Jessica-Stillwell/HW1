@@ -164,7 +164,7 @@ int getByte(int x, int n) {
  *   Hint : less than 10 lines of code
  */
 int logicalShift(int x, int n) {
-  int i = 0x80000000;
+  int i = 1<<31;
   return (x >> n) & ~((i >> n) << 1);;
 }
 /*

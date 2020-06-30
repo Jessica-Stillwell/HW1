@@ -152,7 +152,7 @@ int bitAnd(int x, int y) {
  *   Hint : less than 5 lines of code
  */
 int getByte(int x, int n) {
-  return ((x<<(8*(3-n))) >> 24) & 0xff;;
+  return (x>>8*n) & 0xff;
 }
 /*
  * logicalShift - shift x to the right by n, using a logical shift

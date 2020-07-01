@@ -152,7 +152,7 @@ int bitAnd(int x, int y) {
  *   Hint : less than 5 lines of code
  */
 int getByte(int x, int n) {
-  return (x>>(n<<3)) & 0xFF;
+  return ((x<<(8*(3+(~n+1)))) >> 24) & 0xff;;
 }
 /*
  * logicalShift - shift x to the right by n, using a logical shift
@@ -223,7 +223,7 @@ int divpwr2(int x, int n) {
  *   Hint : less than 5 lines of code
  */
 int negate(int x) {
-  return 2;
+  return (~x+1);
 }
 /*
  * isPositive - return 1 if x > 0, return 0 otherwise

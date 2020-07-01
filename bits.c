@@ -234,7 +234,7 @@ int negate(int x) {
  *   Hint : less than 5 lines of code
  */
 int isPositive(int x) {
-  return 2;
+  return !(1&(x>>31)) ^ !x;
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0

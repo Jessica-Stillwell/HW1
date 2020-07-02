@@ -212,7 +212,8 @@ int fitsBits(int x, int n) {
  *   Hint : less than 5 lines of code
  */
 int divpwr2(int x, int n) {
-    return 2;
+    int i=(x>>31);
+    return(x+(((i&1)<<n)+i))>>n;
 }
 /*
  * negate - return -x

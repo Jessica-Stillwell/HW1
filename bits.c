@@ -199,7 +199,7 @@ int tmin(void) {
  *   Hint : less than 5 lines of code
  */
 int fitsBits(int x, int n) {
-    int y = (x<<(32-n))>>(32-n);
+    int y = (x<<(32+(~n+1)))>>(32+(~n+1));
     return !(x^y);
 }
 /*

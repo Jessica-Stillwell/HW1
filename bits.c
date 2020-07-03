@@ -164,8 +164,7 @@ int getByte(int x, int n) {
  *   Hint : less than 10 lines of code
  */
 int logicalShift(int x, int n) {
-  int i = 1<<31;
-  return (x >> n) & ~((i >> n) << 1);;
+  return (x >> n) & ~((1<<31 >> n) << 1);
 }
 /*
  * bitCount - returns count of number of 1's in word
@@ -261,7 +260,13 @@ int ilog2(int x) {
  *   Hint : less than 10 lines of code
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+  unsigned ex=(uf<<1)>>24;
+  unsigned frac=uf<<9;
+
+  if (!(ex^0xff) && frac){
+    return uf;
+  }
+  return uf^(1<<31);
 }
 /*
  * float_twice - Return bit-level equivalent of expression 2*f for

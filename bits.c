@@ -290,7 +290,7 @@ unsigned float_twice(unsigned uf) {
   unsigned ex=(uf<<1)>>24;
 
   if (!(ex^0x00)){
-    return (uf<<1)|(uf&(1<<31));
+    return (uf<<1)+(uf&(1<<31));
   }
 
   if (!(ex^0xff)){

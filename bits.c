@@ -287,5 +287,15 @@ unsigned float_neg(unsigned uf) {
  *   Hint : less than 20 lines of code
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+  unsigned ex=(uf<<1)>>24;
+
+  if (!(ex^0x00)){
+    return (uf<<1)|(uf&(1<<31));
+  }
+
+  if (!(ex^0xff)){
+    return uf;
+  }
+
+  return uf +(1<<23);
 }

@@ -251,7 +251,19 @@ int isPositive(int x) {
  *   Hint : less than 100 lines of code
  */
 int ilog2(int x) {
-  return 2;
+   x = x | (x >>  1);
+   x = x | (x >>  2);
+   x = x | (x >>  4);
+   x = x | (x >>  8);
+   x = x | (x >> 16);
+   x = x >> 1;
+   int mask = (17 | (17<<8) | (17<<16) | (17<<24));
+   int bits4 = (x&mask) + ((x>>1)&mask) + ((x>>2)&mask) + ((x>>3)&mask);
+   int bytes12 = (bits4 & 15)+((bits4>>4) & 15)+((bits4>>8) & 15)+((bits4>>12) & 15);
+   int bytes34 = ((bits4>>16) & 15)+((bits4>>20) & 15)+((bits4>>24) & 15)+((bits4>>28) & 15);
+   int total = bytes12 + bytes34;
+   
+  return total;
 }
 /*
  * float_neg - Return bit-level equivalent of expression -f for

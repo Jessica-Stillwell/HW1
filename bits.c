@@ -139,6 +139,9 @@ NOTES:
  *   Max ops: 8
  *   Rating: 1
  *   Hint : less than 5 lines of code
+ *
+ * This function ors a not(x) and not(y), and then performs not on this output to get
+ * the desired & output between x and y.
  */
 int bitAnd(int x, int y) {
     return ~(~x | ~y);
@@ -151,6 +154,9 @@ int bitAnd(int x, int y) {
  *   Max ops: 6
  *   Rating: 2
  *   Hint : less than 5 lines of code
+ *
+ * Shifting n to the left by three, means x will be shifted right by the amount of bits
+ * in n bytes. Masking with 0xFF returns only the requested 8 bits' value.
  */
 int getByte(int x, int n) {
   return (x>>(n<<3)) & 0xFF;
@@ -174,6 +180,11 @@ int logicalShift(int x, int n) {
  *   Max ops: 40
  *   Rating: 4
  *   Hint : less than 10 lines of code
+ *
+ * This function masks every first bit per group of 4 bits, and shifts until reaching the 4th bit.
+ * These masked values are added. This totals the one's in each 4 bit group.
+ * Then this new str is shifted by four until each group of four bits is examined.
+ * Masking each 4 bit grouping with 15 evaluates 4 bits at a time, and adding them returns the total 1s.
  */
 int bitCount(int x) {
     int mask = (17 | (17<<8) | (17<<16) | (17<<24));
@@ -190,6 +201,8 @@ int bitCount(int x) {
  *   Max ops: 4
  *   Rating: 1
  *   Hint : less than 5 lines of code
+ *
+ * This function shifts 1 to the MSB followed by 0s.
  */
 int tmin(void) {
   return 1<<31;
@@ -203,6 +216,9 @@ int tmin(void) {
  *   Max ops: 15
  *   Rating: 2
  *   Hint : less than 5 lines of code
+ *
+ * Shift x so that all bits which cannot fit in the new n bit size, are removed.
+ * Then check if x and y (x shifted to be n bits) are equal.
  */
 int fitsBits(int x, int n) {
     int y = (x<<(32+(~n+1)))>>(32+(~n+1));
@@ -250,6 +266,9 @@ int isPositive(int x) {
  *   Max ops: 90
  *   Rating: 4
  *   Hint : less than 100 lines of code
+ *
+ * Shifting x and the | with x, all bits to the right of the highest set bit are 1s...
+ * then shift one so the total ones counts the index of the highest set bit.
  */
 int ilog2(int x) {
    x = x | (x >>  1);

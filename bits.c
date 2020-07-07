@@ -299,10 +299,7 @@ int ilog2(int x) {
     bytes12 = (bits & 15)+((bits>>4) & 15)+((bits>>8) & 15)+((bits>>12) & 15);
     bytes34 = ((bits>>16) & 15)+((bits>>20) & 15)+((bits>>24) & 15)+((bits>>28) & 15);
   
-   
     return bytes34 + bytes12;
-   
-  return total;
 }
 /*
  * float_neg - Return bit-level equivalent of expression -f for

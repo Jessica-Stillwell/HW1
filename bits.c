@@ -287,7 +287,7 @@ int ilog2(int x) {
     int msk;
     int bits;
     int bytes12;
-    int bytes34
+    int bytes34;
     x = x | (x >>  1);
     x = x | (x >>  2);
     x = x | (x >>  4);

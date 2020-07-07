@@ -284,17 +284,23 @@ int isPositive(int x) {
  * then shift one so the total ones counts the index of the highest set bit.
  */
 int ilog2(int x) {
-   x = x | (x >>  1);
-   x = x | (x >>  2);
-   x = x | (x >>  4);
-   x = x | (x >>  8);
-   x = x | (x >> 16);
-   x = x >> 1;
-   int mask = (17 | (17<<8) | (17<<16) | (17<<24));
-   int bits4 = (x&mask) + ((x>>1)&mask) + ((x>>2)&mask) + ((x>>3)&mask);
-   int bytes12 = (bits4 & 15)+((bits4>>4) & 15)+((bits4>>8) & 15)+((bits4>>12) & 15);
-   int bytes34 = ((bits4>>16) & 15)+((bits4>>20) & 15)+((bits4>>24) & 15)+((bits4>>28) & 15);
-   int total = bytes12 + bytes34;
+    int msk;
+    int bits;
+    int bytes12;
+    int bytes34
+    x = x | (x >>  1);
+    x = x | (x >>  2);
+    x = x | (x >>  4);
+    x = x | (x >>  8);
+    x = x | (x >> 16);
+    x = x >> 1;
+    msk = (17 | (17<<8) | (17<<16) | (17<<24));
+    bits = (x&msk) + ((x>>1)&msk) + ((x>>2)&msk) + ((x>>3)&msk);
+    bytes12 = (bits & 15)+((bits>>4) & 15)+((bits>>8) & 15)+((bits>>12) & 15);
+    bytes34 = ((bits>>16) & 15)+((bits>>20) & 15)+((bits>>24) & 15)+((bits>>28) & 15);
+  
+   
+    return bytes34 + bytes12;
    
   return total;
 }

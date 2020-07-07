@@ -139,8 +139,10 @@ NOTES:
  *   Max ops: 8
  *   Rating: 1
  *   Hint : less than 5 lines of code
+ *
+ * This function ors a not(x) and not(y), and then performs not on this output to get
+ * the desired & output between x and y.
  */
- /* Uses DeMorgan's Law to return x and y */
 int bitAnd(int x, int y) {
     return ~(~x | ~y);
 }
@@ -152,6 +154,9 @@ int bitAnd(int x, int y) {
  *   Max ops: 6
  *   Rating: 2
  *   Hint : less than 5 lines of code
+ *
+ * Shifting n to the left by three, means x will be shifted right by the amount of bits
+ * in n bytes. Masking with 0xFF returns only the requested 8 bits' value.
  */
 int getByte(int x, int n) {
   return (x>>(n<<3)) & 0xFF;
@@ -165,8 +170,9 @@ int getByte(int x, int n) {
  *   Rating: 3
  *   Hint : less than 10 lines of code
  */
- /* Shifts x to the right by n and then masks the leftmost n-1 bits
-    with 0s using & */
+ /* Shifts x to the right by n and then masks the leftmost n-1 bits with 0s so that
+    it returns the logical shift.
+*/
 int logicalShift(int x, int n) {
   return (x >> n) & ~((1<<31 >> n) << 1);
 }
@@ -177,6 +183,11 @@ int logicalShift(int x, int n) {
  *   Max ops: 40
  *   Rating: 4
  *   Hint : less than 10 lines of code
+ *
+ * This function masks every first bit per group of 4 bits, and shifts until reaching the 4th bit.
+ * These masked values are added. This totals the one's in each 4 bit group.
+ * Then this new str is shifted by four until each group of four bits is examined.
+ * Masking each 4 bit grouping with 15 evaluates 4 bits at a time, and adding them returns the total 1s.
  */
 int bitCount(int x) {
     int mask = (17 | (17<<8) | (17<<16) | (17<<24));
@@ -193,6 +204,8 @@ int bitCount(int x) {
  *   Max ops: 4
  *   Rating: 1
  *   Hint : less than 5 lines of code
+ *
+ * This function shifts 1 to the MSB followed by 0s.
  */
 int tmin(void) {
   return 1<<31;
@@ -206,6 +219,9 @@ int tmin(void) {
  *   Max ops: 15
  *   Rating: 2
  *   Hint : less than 5 lines of code
+ *
+ * Shift x so that all bits which cannot fit in the new n bit size, are removed.
+ * Then check if x and y (x shifted to be n bits) are equal.
  */
 int fitsBits(int x, int n) {
     int y = (x<<(32+(~n+1)))>>(32+(~n+1));
@@ -220,8 +236,11 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  *   Hint : less than 5 lines of code
  */
- /* If x is negative, returns ((x/2^n)+1)>>n so that it rounds up. Otherwise, i=0
-  so just returns a right bit shift */
+ /* Checks to see if the sign bit of x is 1. If x is negative, 1 needs to be added to x so that it
+    rounds towards 0. Shifting 1 to the left by n and adding this to x>>31 creates a mask with 1s in 
+    the rightmost n-1 bits. When this is added to x and shifted right n bits it is equivalent to x/(2^n) 
+    rounded towards zero
+*/
 int divpwr2(int x, int n) {
     int i=(x>>31);
     return(x+(((i&1)<<n)+i))>>n;
@@ -234,7 +253,8 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  *   Hint : less than 5 lines of code
  */
- /* Returns negative x by flipping the bits then adding 1 */
+ /* Returns -x by flipping the bits of x then adding 1 
+ */
 int negate(int x) {
   return (~x+1);
 }
@@ -246,7 +266,9 @@ int negate(int x) {
  *   Rating: 3
  *   Hint : less than 5 lines of code
  */
- /* If sign bit & 1 equals 1, returns 0. If x is 0 then 1^1 returns 0 */
+ /* If sign bit & 1 equals 1 then x is negative, returns 0. If x is 0 then this will return 1, so 
+    there is an additional check, !x, using xor. If x is 0 then 1^1 returns 0.
+ */
 int isPositive(int x) {
   return !(1&(x>>31)) ^ !x;
 }
@@ -257,6 +279,9 @@ int isPositive(int x) {
  *   Max ops: 90
  *   Rating: 4
  *   Hint : less than 100 lines of code
+ *
+ * Shifting x and the | with x, all bits to the right of the highest set bit are 1s...
+ * then shift one so the total ones counts the index of the highest set bit.
  */
 int ilog2(int x) {
    x = x | (x >>  1);
@@ -285,8 +310,10 @@ int ilog2(int x) {
  *   Rating: 2
  *   Hint : less than 10 lines of code
  */
- /* Changes sign of x using xor. If exponent bits are all 1s and frac is nonzero
-    then x is not a number, returns uf */
+ /* Changes sign of x using xor. Ex: if x is positive then 0^1 returns x with a 1 in the sign bit, -x. 
+    If exponent bits are all 1s and frac is nonzero then x is not a NaN. Checks the exponent bits using
+    a mask of 8 1s. If NaN, returns uf.
+ */
 unsigned float_neg(unsigned uf) {
   unsigned ex=(uf<<1)>>24;
   unsigned frac=uf<<9;
@@ -308,8 +335,11 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  *   Hint : less than 20 lines of code
  */
- /* Adds 1 to exponent bit to multiply by 2. If exponents are all 0s then
-    shift uf to right by 1. If exponent is all 1s, then NaN, returns uf. */
+ /* Adding 1 to the exponent is equivalent to multiplying by 2. To do this, 1<<23 is added to uf to
+    add only to the portion with the exponent bits. If exponents are all 0s then shifting uf to the 
+    left by 1 is equivalent to multiplying by 2. Once it is shifted, the sign bit is added back in.
+    If exponent is all 1s, then NaN or infinity, returns uf. 
+*/
 unsigned float_twice(unsigned uf) {
   unsigned ex=(uf<<1)>>24;
 

@@ -1,7 +1,7 @@
 /*
  *
- * Name: Jessica Stillwell 
- * User ID: stillwj3
+ * Name: Jessica Stillwell, Haylee Rawdin
+ * User ID: stillwj3, rawdinh
  *
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -140,6 +140,7 @@ NOTES:
  *   Rating: 1
  *   Hint : less than 5 lines of code
  */
+ /* Uses DeMorgan's Law to return x and y */
 int bitAnd(int x, int y) {
     return ~(~x | ~y);
 }
@@ -164,6 +165,8 @@ int getByte(int x, int n) {
  *   Rating: 3
  *   Hint : less than 10 lines of code
  */
+ /* Shifts x to the right by n and then masks the leftmost n-1 bits
+    with 0s using & */
 int logicalShift(int x, int n) {
   return (x >> n) & ~((1<<31 >> n) << 1);
 }
@@ -217,6 +220,8 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  *   Hint : less than 5 lines of code
  */
+ /* If x is negative, returns ((x/2^n)+1)>>n so that it rounds up. Otherwise, i=0
+  so just returns a right bit shift */
 int divpwr2(int x, int n) {
     int i=(x>>31);
     return(x+(((i&1)<<n)+i))>>n;
@@ -229,6 +234,7 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  *   Hint : less than 5 lines of code
  */
+ /* Returns negative x by flipping the bits then adding 1 */
 int negate(int x) {
   return (~x+1);
 }
@@ -240,6 +246,7 @@ int negate(int x) {
  *   Rating: 3
  *   Hint : less than 5 lines of code
  */
+ /* If sign bit & 1 equals 1, returns 0. If x is 0 then 1^1 returns 0 */
 int isPositive(int x) {
   return !(1&(x>>31)) ^ !x;
 }
@@ -278,6 +285,8 @@ int ilog2(int x) {
  *   Rating: 2
  *   Hint : less than 10 lines of code
  */
+ /* Changes sign of x using xor. If exponent bits are all 1s and frac is nonzero
+    then x is not a number, returns uf */
 unsigned float_neg(unsigned uf) {
   unsigned ex=(uf<<1)>>24;
   unsigned frac=uf<<9;
@@ -299,6 +308,8 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  *   Hint : less than 20 lines of code
  */
+ /* Adds 1 to exponent bit to multiply by 2. If exponents are all 0s then
+    shift uf to right by 1. If exponent is all 1s, then NaN, returns uf. */
 unsigned float_twice(unsigned uf) {
   unsigned ex=(uf<<1)>>24;
 

@@ -136,26 +136,26 @@ void evolve(board prv, board nxt){
    n = prv[HEIGHT-2][0]+prv[HEIGHT-2][1]+prv[HEIGHT-1][1];
    nxt[HEIGHT-1][0]=(n==3) | (prv[HEIGHT-1][0] & (n==2));
 
-   n = prv[HEIGHT-1][WIDTH-2]+prv[HEIGHT-2][WIDTH-2]+prv[HEIGHT-2][WIDTH-1];
+   n = prv[HEIGHT-2][WIDTH-2]+prv[HEIGHT-2][WIDTH-1]+prv[HEIGHT-1][WIDTH-2];
    nxt[HEIGHT-1][WIDTH-1]=(n==3) | (prv[HEIGHT-1][WIDTH-1] & (n==2));
 
-   for (j=1; j<WIDTH-1; j++){
+   for (j=1; j<WIDTH-1; ++j){
       n = prv[0][j-1]+prv[0][j+1]+prv[1][j-1]+prv[1][j]+prv[1][j+1];
       nxt[0][j]=(n==3) | (prv[0][j] & (n==2));
-      n = prv[HEIGHT-1][j-1]+prv[HEIGHT-1][j+1]+prv[HEIGHT-2][j-1]+prv[HEIGHT-2][j]+prv[HEIGHT-2][j+1];
+      n = prv[HEIGHT-2][j-1]+prv[HEIGHT-2][j]+prv[HEIGHT-2][j+1]+prv[HEIGHT-1][j-1]+prv[HEIGHT-1][j+1];
       nxt[HEIGHT-1][j]=(n==3) | (prv[HEIGHT-1][j] & (n==2));
    }
-   for (i=1; i<HEIGHT-1; i++){
-      n = prv[i][1]+prv[i-1][0]+prv[i+1][0]+prv[i-1][1]+prv[i+1][1];
+   for (i=1; i<HEIGHT-1; ++i){
+      n = prv[i-1][0]+prv[i-1][1]+prv[i][1]+prv[i+1][0]+prv[i+1][1];
       nxt[i][0]=(n==3) | (prv[i][0] & (n==2));
-      n = prv[i][WIDTH-2]+prv[i-1][WIDTH-1]+prv[i+1][WIDTH-1]+prv[i-1][WIDTH-2]+prv[i+1][WIDTH-2];
-      nxt[i][WIDTH-1]=(n==3) | (prv[i][WIDTH-1] & (n==2));
+      n = prv[i-1][WIDTH-2]+prv[i-1][WIDTH-1]+prv[i][WIDTH-2]+prv[i+1][WIDTH-2]+prv[i+1][WIDTH-1];
+      nxt[i][WIDTH-1]=(prv[i][WIDTH-1] & (n==2)) | (n==3);
    }
 
-   for (i=1; i<HEIGHT-1; i++) {
-      for (j=1; j<WIDTH-1; j++) {
-         n = prv[i][j+1]+prv[i][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i-1][j-1]+prv[i+1][j]+prv[i+1][j+1]+prv[i+1][j-1];
-         nxt[i][j] = (n==3)| (prv[i][j] & (n==2));
+   for (i=HEIGHT-2; i>0; --i) {
+      for (j=WIDTH-2; j>0; --j) {
+         n = prv[i-1][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i][j-1]+prv[i][j+1]+prv[i+1][j-1]+prv[i+1][j]+prv[i+1][j+1];
+         nxt[i][j] = (prv[i][j] & (n==2)) | (n==3);
       }
    }
 

@@ -13,15 +13,14 @@
  * with Conway's original automation.
  *
  * Below is a very simple implementation.  This is your chance to apply some of
- * the loop optimization techniques we've been talking about in class: 
+ * the loop optimization techniques we've been talking about in class:
  *  1) Remove loop inefficiencies
  *  2) Reduce procedure calls
  *  3) Reduce unnecessary memory references
  *  4) Loop unrolling
  * There are, of course, more optimizations that you can apply.  For example,
  * moving sequentially through memory is more efficient than jumping around.
- * We'll see why in Chapter 9.  
-
+ * We'll see why in Chapter 9.
  * C stores 2D arrays Column Major Order.  That is to say that cell
  * A[0][WIDTH-1] is right next to A[1][0] in memory.  If you notice the nested
  * loops in evolve (below) I'm incrementing the column index, i, more quickly
@@ -62,82 +61,114 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int generation = 0;
-int printLazy = 0;
-
+int printLazy=0;
+int generation=0;
 /* Simple Life evolution.  These functions implement Conway's game of
  * life rules.  Your millage may vary, void where prohibited.
  */
-static int min(int x, int y) {
-   return x < y ? x : y;
-}
-static int max(int x, int y) {
+/*static int max(int x, int y) {
    return x < y ? y : x;
-}
+}*/
 
 /* Neighbors: Given the board b, this function counts the number of
  * neighbors of cell-(i,j).
  *
  * This implementation over-counts the neighborhood.  The loop counts the
- * cell-(i,j) and then subtracts off one if it is alive. 
+ * cell-(i,j) and then subtracts off one if it is alive.
  *
  * The use of min and max ensure that the neighborhood is truncated at the edges
- * of the board.  
+ * of the board.
  */
-static int neighbors (board b, int i, int j)
+/*static int neighbors (board b, register unsigned int i, register unsigned int j)
 {
-      int h = !(i == HEIGHT-1);
-      int r = !(i == 0);
-      int c = !(j == 0);
-      int w = !(j == WIDTH-1);
-      
-      return (b[i-r][j] *r) + (b[i+h][j] *h) + (b[i-r][j-c] *r *c) +(b[i+h][j-c] *h *c) + (b[i][j-c] *c) + (b[i][j+w] *w)+(b[i-r][j+w] *r *w)+(b[i+h][j+w] *h *w);
-}
-
+  return b[i][j+1]+b[i][j-1]+b[i-1][j]+b[i-1][j+1]+b[i-1][j-1]+b[i+1][j]+b[i+1][j+1]+b[i+1][j-1];
+}*/
 
 /* lazyPrint: A not-too-elegant print function that prints the
  * upper-left 10 x 10 cells of the simulation board, and sleeps for 1
  * second.
  */
 void lazyPrint(board prv){
+  int i =9;
+  while(i--){
+    printf("%d",prv[i][0]);
+    printf("%d",prv[i][1]);
+    printf("%d",prv[i][2]);
+    printf("%d",prv[i][3]);
+    printf("%d",prv[i][4]);
+    printf("%d",prv[i][5]);
+    printf("%d",prv[i][6]);
+    printf("%d",prv[i][7]);
+    printf("%d",prv[i][8]);
+    printf("%d",prv[i][9]);
 
-  for (int i=0; i<10; i++){
-    for (int j=0; j<10; j++){
-      printf("%d",prv[i][j]);
-    }
     printf("\n");
   }
   printf("\n");
 
   // sleep 1 seconds
-  unsigned int time_to_sleep = 1; 
+  unsigned int time_to_sleep = 1;
   while(time_to_sleep){
     time_to_sleep = sleep(time_to_sleep);
   }
 }
-
+int alive(board prv, int r, int c, int n){
+    return (n==3) | (prv[r][c] & (n==2));
+}
 /* Evolve: This is a very simple evolution function.  It applies the
  * rules of Conway's Game of Live as written.  There are a lot of
  * improvements that you can make.  Good luck beating Ada, she is
  * really good.
  */
+
 void evolve(board prv, board nxt){
   
-   int i, j;
-   int n;
-
+   register int i, j, n;
    printf("\rGeneration %d\n", generation++);
-   if (printLazy == 1){
+   if (printLazy){
      lazyPrint(prv);
    }
+    register int w2 = WIDTH - 2;
+    register int h1 = HEIGHT - 1;
+    register int h2 = HEIGHT -2;
+    register int w1 = WIDTH -1;
    
-   for (j=0; j < WIDTH; ++j) {
-      for (i = 0; i < HEIGHT; ++i) {
-         n = neighbors(prv, i, j);
-        nxt[i][j] = (n==3) || (prv[i][j] && (n==2));
-      }
-   }
+       n = prv[0][1]+prv[1][0]+prv[1][1];
+       nxt[0][0]= alive(prv, 0, 0, n);
+
+       n = prv[0][w2]+prv[1][w2]+prv[1][w1];
+       nxt[0][w1]=alive(prv, 0, w1, n);
+
+       n = prv[h2][0]+prv[h2][1]+prv[h1][1];
+       nxt[h1][0]=alive(prv, h1, 0, n);
+
+       n = prv[h2][w2]+prv[h2][w1]+prv[h1][w2];
+       nxt[h1][w1]=alive(prv, h1, w1, n);
+
+       for (j=1; j<w1; ++j){
+          n = prv[0][j-1]+prv[0][j+1]+prv[1][j-1]+prv[1][j]+prv[1][j+1];
+          nxt[0][j]=alive(prv, 0, j, n);
+          n = prv[h2][j-1]+prv[h2][j]+prv[h2][j+1]+prv[h1][j-1]+prv[h1][j+1];
+          nxt[h1][j]=alive(prv, h1, j, n);
+       }
+       for (i=1; i<h1; ++i){
+          n = prv[i-1][0]+prv[i-1][1]+prv[i][1]+prv[i+1][0]+prv[i+1][1];
+          nxt[i][0]=alive(prv, i, 0, n);
+          n = prv[i-1][w2]+prv[i-1][w1]+prv[i][w2]+prv[i+1][w2]+prv[i+1][w1];
+          nxt[i][w1]=alive(prv, i, w1, n);
+       }
+
+       for (i=h2; i>0; --i) {
+          for (j=w2; j>0; --j) {
+             n = prv[i-1][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i][j-1]+prv[i][j+1]+prv[i+1][j-1]+prv[i+1][j]+prv[i+1][j+1];
+             nxt[i][j] = alive(prv, i, j, n);
+          }
+       }
+
+
+
 }
+
 
 
 /* The program takes one optional arugment: -fg (full GUI) or -lg
@@ -157,26 +188,23 @@ int main(int argc, char* argv[]){
   
   if (argc > 2 ){
     fprintf(stderr, "Usage: %s [-fg or -lg]\n\t-fg Full GUID\n\t-lg Lazy GUI Mode\n", argv[0]);
-    return EXIT_FAILURE; 
+    return EXIT_FAILURE;
   } else if ((argc == 2 && 0 == strcmp (argv[1], "-lg"))) {
     printf("Running in -lg (Lazy GUI) mode\n");
     printLazy += 1;
-    add_method("Simple", &evolve);
+    add_method("stillwj3", &evolve);
     run_game(1);
   } else if ((argc == 2 && 0 == strcmp (argv[1], "-fg"))) {
     printf("Running in GUI mode\n");
-    add_method("Simple", &evolve);
+    add_method("stillwj3", &evolve);
     run_game(0);
   } else if ((argc == 2 && (1 != strcmp (argv[1], "-fg") || 1 != strcmp (argv[1], "-lg")))) {
     fprintf(stderr, "Usage: %s [-fg or -lg]\n\t-fg Full GUID\n\t-lg Lazy GUI Mode\n", argv[0]);
     return EXIT_FAILURE;
   } else {
     printf("Running in silent (no GUI window) mode\n");
-    add_method("Simple", &evolve);
+    add_method("stillwj3", &evolve);
     run_game(1);
-  }              
+  }
   return 0;
 }
-
-
-

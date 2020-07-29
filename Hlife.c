@@ -80,32 +80,17 @@ int generation=0;
  * The use of min and max ensure that the neighborhood is truncated at the edges
  * of the board.  
  */
-static int neighbors (board b, int i, int j)
+/*static int neighbors (board b, register unsigned int i, register unsigned int j)
 {
-   register unsigned int n = 0;
-   register unsigned int h=!(i==HEIGHT-1);
-   register unsigned int r=!(i==0);
-   register unsigned int c=!(j==0);
-   register unsigned int w =!(j==WIDTH-1);
-
-   n+=b[i-r][j]*r;
-   n+=b[i+h][j]*h;
-   n+=b[i-r][j-c]*r*c;
-   n+=b[i+h][j-c]*h*c;
-   n+=b[i][j-c]*c;
-   n+=b[i][j+w]*w;
-   n+=b[i-r][j+w]*r*w;
-   n+=b[i+h][j+w]*h*w;
-   return n;
-}
+  return b[i][j+1]+b[i][j-1]+b[i-1][j]+b[i-1][j+1]+b[i-1][j-1]+b[i+1][j]+b[i+1][j+1]+b[i+1][j-1];
+}*/
 
 /* lazyPrint: A not-too-elegant print function that prints the
  * upper-left 10 x 10 cells of the simulation board, and sleeps for 1
  * second.
  */
 void lazyPrint(board prv){
-
-  int i = 9;
+  int i =9;
   while(i--){
     printf("%d",prv[i][0]);
     printf("%d",prv[i][1]);
@@ -136,15 +121,41 @@ void lazyPrint(board prv){
  */
 void evolve(board prv, board nxt){
   
-   register unsigned int i, j, n;
-   /*printf("\rGeneration %d\n", generation++);*/
+   register int i, j, n;
+   printf("\rGeneration %d\n", generation++);
    if (printLazy){
      lazyPrint(prv);
    }
-   for (i = HEIGHT; i--;) {
-      for (j = WIDTH; j--;) {
-         n = neighbors(prv, i, j);
-         nxt[i][j] = (n==3) | (prv[i][j] & (n==2));
+
+   n = prv[0][1]+prv[1][0]+prv[1][1];
+   nxt[0][0]= (n==3) | (prv[0][0] & (n==2));
+
+   n = prv[0][WIDTH-2]+prv[1][WIDTH-2]+prv[1][WIDTH-1];
+   nxt[0][WIDTH-1]=(n==3) | (prv[0][WIDTH-1] & (n==2));
+
+   n = prv[HEIGHT-2][0]+prv[HEIGHT-2][1]+prv[HEIGHT-1][1];
+   nxt[HEIGHT-1][0]=(n==3) | (prv[HEIGHT-1][0] & (n==2));
+
+   n = prv[HEIGHT-1][WIDTH-2]+prv[HEIGHT-2][WIDTH-2]+prv[HEIGHT-2][WIDTH-1];
+   nxt[HEIGHT-1][WIDTH-1]=(n==3) | (prv[HEIGHT-1][WIDTH-1] & (n==2));
+
+   for (j=1; j<WIDTH-1; j++){
+      n = prv[0][j-1]+prv[0][j+1]+prv[1][j-1]+prv[1][j]+prv[1][j+1];
+      nxt[0][j]=(n==3) | (prv[0][j] & (n==2));
+      n = prv[HEIGHT-1][j-1]+prv[HEIGHT-1][j+1]+prv[HEIGHT-2][j-1]+prv[HEIGHT-2][j]+prv[HEIGHT-2][j+1];
+      nxt[HEIGHT-1][j]=(n==3) | (prv[HEIGHT-1][j] & (n==2));
+   }
+   for (i=1; i<HEIGHT-1; i++){
+      n = prv[i][1]+prv[i-1][0]+prv[i+1][0]+prv[i-1][1]+prv[i+1][1];
+      nxt[i][0]=(n==3) | (prv[i][0] & (n==2));
+      n = prv[i][WIDTH-2]+prv[i-1][WIDTH-1]+prv[i+1][WIDTH-1]+prv[i-1][WIDTH-2]+prv[i+1][WIDTH-2];
+      nxt[i][WIDTH-1]=(n==3) | (prv[i][WIDTH-1] & (n==2));
+   }
+
+   for (i=1; i<HEIGHT-1; i++) {
+      for (j=1; j<WIDTH-1; j++) {
+         n = prv[i][j+1]+prv[i][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i-1][j-1]+prv[i+1][j]+prv[i+1][j+1]+prv[i+1][j-1];
+         nxt[i][j] = (n==3)| (prv[i][j] & (n==2));
       }
    }
 

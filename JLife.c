@@ -1,3 +1,10 @@
+/*
+ * Name: Jessica Stillwell, Haylee Rawdin
+ * Description: This program creates the boards for each generation in
+ * the Game of Life by counting the neighbors of a cell. 
+ * Changes: We removed the neighbors function, partially unrolled the for loops,
+ * and evaluated corners first then broke the board into chunks. 
+*/
 /* This is a cellular automation simulator.  The rules are very
  * simple.  The board is a grid.  Each grid square can hold at most
  * one cell.  For a cell to survive from generation to generation it
@@ -60,7 +67,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-
+#define ALIVE(n,b) (n==3) | (b & (n==2))
 int printLazy=0;
 int generation=0;
 /* Simple Life evolution.  These functions implement Conway's game of
@@ -106,21 +113,18 @@ void lazyPrint(board prv){
   }
   printf("\n");
 
-  // sleep 1 seconds
+  //sleep 1 seconds
   unsigned int time_to_sleep = 1;
   while(time_to_sleep){
     time_to_sleep = sleep(time_to_sleep);
   }
 }
-int alive(board prv, int r, int c, int n){
-    return (n==3) | (prv[r][c] & (n==2));
-}
+
 /* Evolve: This is a very simple evolution function.  It applies the
  * rules of Conway's Game of Live as written.  There are a lot of
  * improvements that you can make.  Good luck beating Ada, she is
  * really good.
  */
-
 void evolve(board prv, board nxt){
   
    register int i, j, n;
@@ -128,47 +132,40 @@ void evolve(board prv, board nxt){
    if (printLazy){
      lazyPrint(prv);
    }
-    register int w2 = WIDTH - 2;
-    register int h1 = HEIGHT - 1;
-    register int h2 = HEIGHT -2;
-    register int w1 = WIDTH -1;
-   
-       n = prv[0][1]+prv[1][0]+prv[1][1];
-       nxt[0][0]= alive(prv, 0, 0, n);
 
-       n = prv[0][w2]+prv[1][w2]+prv[1][w1];
-       nxt[0][w1]=alive(prv, 0, w1, n);
+   n = prv[0][1]+prv[1][0]+prv[1][1];
+   nxt[0][0]= (n==3) | (prv[0][0] & (n==2));
 
-       n = prv[h2][0]+prv[h2][1]+prv[h1][1];
-       nxt[h1][0]=alive(prv, h1, 0, n);
+   n = prv[0][WIDTH-2]+prv[1][WIDTH-2]+prv[1][WIDTH-1];
+   nxt[0][WIDTH-1]=(n==3) | (prv[0][WIDTH-1] & (n==2));
 
-       n = prv[h2][w2]+prv[h2][w1]+prv[h1][w2];
-       nxt[h1][w1]=alive(prv, h1, w1, n);
+   n = prv[HEIGHT-2][0]+prv[HEIGHT-2][1]+prv[HEIGHT-1][1];
+   nxt[HEIGHT-1][0]=ALIVE(n,prv[HEIGHT-1][0]);
 
-       for (j=1; j<w1; ++j){
-          n = prv[0][j-1]+prv[0][j+1]+prv[1][j-1]+prv[1][j]+prv[1][j+1];
-          nxt[0][j]=alive(prv, 0, j, n);
-          n = prv[h2][j-1]+prv[h2][j]+prv[h2][j+1]+prv[h1][j-1]+prv[h1][j+1];
-          nxt[h1][j]=alive(prv, h1, j, n);
-       }
-       for (i=1; i<h1; ++i){
-          n = prv[i-1][0]+prv[i-1][1]+prv[i][1]+prv[i+1][0]+prv[i+1][1];
-          nxt[i][0]=alive(prv, i, 0, n);
-          n = prv[i-1][w2]+prv[i-1][w1]+prv[i][w2]+prv[i+1][w2]+prv[i+1][w1];
-          nxt[i][w1]=alive(prv, i, w1, n);
-       }
+   n = prv[HEIGHT-2][WIDTH-2]+prv[HEIGHT-2][WIDTH-1]+prv[HEIGHT-1][WIDTH-2];
+   nxt[HEIGHT-1][WIDTH-1]=ALIVE(n,prv[HEIGHT-1][WIDTH-1]);
 
-       for (i=h2; i>0; --i) {
-          for (j=w2; j>0; --j) {
-             n = prv[i-1][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i][j-1]+prv[i][j+1]+prv[i+1][j-1]+prv[i+1][j]+prv[i+1][j+1];
-             nxt[i][j] = alive(prv, i, j, n);
-          }
-       }
+   for (j=1; j<WIDTH-1; ++j){
+      n = prv[0][j-1]+prv[0][j+1]+prv[1][j-1]+prv[1][j]+prv[1][j+1];
+      nxt[0][j]=(n==3) | (prv[0][j] & (n==2));
+      n = prv[HEIGHT-2][j-1]+prv[HEIGHT-2][j]+prv[HEIGHT-2][j+1]+prv[HEIGHT-1][j-1]+prv[HEIGHT-1][j+1];
+      nxt[HEIGHT-1][j]=(n==3) | (prv[HEIGHT-1][j] & (n==2));
+   }
+   for (i=1; i<HEIGHT-1; ++i){
+      n = prv[i-1][0]+prv[i-1][1]+prv[i][1]+prv[i+1][0]+prv[i+1][1];
+      nxt[i][0]=(n==3) | (prv[i][0] & (n==2));
+      n = prv[i-1][WIDTH-2]+prv[i-1][WIDTH-1]+prv[i][WIDTH-2]+prv[i+1][WIDTH-2]+prv[i+1][WIDTH-1];
+      nxt[i][WIDTH-1]=(prv[i][WIDTH-1] & (n==2)) | (n==3);
+   }
 
-
+   for (i=HEIGHT-2; i>0; --i) {
+      for (j=WIDTH-2; j>0; --j) {
+         n = prv[i-1][j-1]+prv[i-1][j]+prv[i-1][j+1]+prv[i][j-1]+prv[i][j+1]+prv[i+1][j-1]+prv[i+1][j]+prv[i+1][j+1];
+         nxt[i][j] = (prv[i][j] & (n==2)) | (n==3);
+      }
+   }
 
 }
-
 
 
 /* The program takes one optional arugment: -fg (full GUI) or -lg
@@ -208,3 +205,5 @@ int main(int argc, char* argv[]){
   }
   return 0;
 }
+
+
